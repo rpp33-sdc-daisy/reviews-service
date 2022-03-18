@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "jest",
-    "start": "nodemon ./server/server.js"
+    "start": "nodemon ./server/server.js",
+    "lint": "./node_modules/.bin/eslint"
   },
   "repository": {
     "type": "git",
@@ -25,6 +26,8 @@
     "underscore": "^1.13.2"
   },
   "devDependencies": {
+    "eslint": "^8.11.0",
+    "eslint-config-airbnb": "^19.0.4",
     "jest": "^27.5.1"
   }
 }
