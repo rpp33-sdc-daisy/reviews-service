@@ -20,14 +20,24 @@
   "homepage": "https://github.com/rpp33-sdc-daisy/reviews-service#readme",
   "dependencies": {
     "axios": "^0.26.1",
+    "body-parser": "^1.20.0",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
+    "mongoose": "^6.2.7",
     "nodemon": "^2.0.15",
+    "pg": "^8.7.3",
     "underscore": "^1.13.2"
   },
   "devDependencies": {
     "eslint": "^8.11.0",
     "eslint-config-airbnb-base": "^15.0.0",
-    "jest": "^27.5.1"
+    "jest": "^27.5.1",
+    "supertest": "^6.2.2"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ]
   }
 }
