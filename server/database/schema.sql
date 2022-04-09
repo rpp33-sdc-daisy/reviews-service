@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS reviews (
   reviewer_name VARCHAR(100) NOT NULL,
   reviewer_email VARCHAR(100) NOT NULL,
   response VARCHAR(500) NOT NULL,
-  helpfulness INTEGER NOT NULL
+  helpfulness INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS photos (
