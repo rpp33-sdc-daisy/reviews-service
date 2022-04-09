@@ -24,12 +24,6 @@ CREATE TABLE IF NOT EXISTS photos (
   url VARCHAR(1000) NOT NULL
 );
 
--- ALTER TABLE photos
---   ADD CONSTRAINT FK_ReviewPhotos
---     FOREIGN KEY (review_id)
---       REFERENCES reviews(id)
---       ON DELETE SET NULL;
-
 CREATE TABLE IF NOT EXISTS characteristics (
   id SERIAL NOT NULL UNIQUE PRIMARY KEY,
   product_id INTEGER NOT NULL,
@@ -49,6 +43,12 @@ CREATE INDEX photos_review_id_idx ON photos(review_id);
 CREATE INDEX characteristics_product_id_idx ON characteristics(product_id);
 CREATE INDEX characteristics_reviews_characteristics_id_idx ON characteristics_reviews(characteristic_id);
 
+-- ALTER TABLE photos
+--   ADD CONSTRAINT FK_ReviewPhotos
+--     FOREIGN KEY (review_id)
+--       REFERENCES reviews(id)
+--       ON DELETE SET NULL;
+
 -- ALTER TABLE characteristic_reviews
 --   ADD CONSTRAINT FK_Reviews
 --     FOREIGN KEY (review_id)
@@ -62,6 +62,7 @@ CREATE INDEX characteristics_reviews_characteristics_id_idx ON characteristics_r
 --       ON DELETE SET NULL;
 
 -- psql sdc-reviews
+-- \conninfo to get more information about current connection
 
 -- Bulk import data from provided dataset
 /*
