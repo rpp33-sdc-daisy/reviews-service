@@ -1,8 +1,10 @@
 const request = require('supertest');
 const { app, server } = require ('./server.js');
+const {db, queries} = require('./database/queries.js');
 
 afterAll(() => {
   server.close();
+  db.end();
 });
 
 describe('Jest test', () => {
@@ -54,7 +56,7 @@ describe('PUT Endpoints', () => {
 
   it('/reviews/meta endpoint should return 204 status', async () => {
     const res = await request(app)
-      .put('/reviews/:review_id/report');
+      .put('/reviews/64623/report');
 
     expect(res.statusCode).toBe(204);
     expect(res.req.method).toBe('PUT');
