@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --coverage",
     "start": "nodemon ./server/server.js",
     "lint": "./node_modules/.bin/eslint"
   },
