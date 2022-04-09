@@ -9,8 +9,8 @@ const app = express();
 app.use(bodyParser.json());
 app.use('/', routes);
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
 
-module.exports = app;
+module.exports = { app, server };
