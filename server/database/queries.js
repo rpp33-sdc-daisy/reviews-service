@@ -17,6 +17,30 @@ db.connect(err => {
 });
 
 const queries = {
+  addReview: (params) => {
+    const query = `INSERT INTO reviews
+        ("product_id", "rating", "date", "summary", "body", "recommend", "reviewer_name", "reviewer_email")
+        VALUES
+        ($1, $2, current_timestamp, $3, $4, $5, $6, $7)
+        RETURNING id;`;
+    const values = [
+      params.product_id,
+      params.rating,
+      params.summary,
+      params.body,
+      params.recommend,
+      params.reviewer_name,
+      params.reviewer_email
+    ];
+
+    db.query(query, values)
+    .then((res) => {
+      return res;
+    })
+    .catch((err) => {
+      return err;
+    });
+  },
   markHelpful: (review_id) => {
     const query = `UPDATE reviews SET helpfulness =  helpfulness + 1 WHERE id = ${review_id}`;
 
