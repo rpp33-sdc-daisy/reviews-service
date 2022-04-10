@@ -20,17 +20,24 @@ router.get('/reviews/meta', async (req, res) => {
 
 // Add a review
 router.post('/reviews', async (req, res) => {
-  const params = req.body;
+  const params = { ...req.body};
 
-  res.sendStatus(201);
+  try {
+    await queries.addReview(params);
+    res.sendStatus(201);
+  } catch (err) {
+    console.log(err)
+    res.sendStatus(500);
+  }
 });
 
 // Mark review as helpful
 router.put('/reviews/:review_id/helpful', async (req, res) => {
   const review_id = req.params.review_id;
+
   try {
     await queries.markHelpful(review_id);
-    res.sendStatus(204)
+    res.sendStatus(204);
   } catch (err) {
     console.log(err)
     res.sendStatus(500);
@@ -40,9 +47,10 @@ router.put('/reviews/:review_id/helpful', async (req, res) => {
 // Report review
 router.put('/reviews/:review_id/report', async (req, res) => {
   const review_id = req.params.review_id;
+
   try {
     await queries.reportReview(review_id);
-    res.sendStatus(204)
+    res.sendStatus(204);
   } catch (err) {
     console.log(err)
     res.sendStatus(500);
