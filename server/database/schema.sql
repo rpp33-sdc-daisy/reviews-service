@@ -7,14 +7,14 @@ CREATE TABLE IF NOT EXISTS reviews (
   id SERIAL NOT NULL PRIMARY KEY,
   product_id INTEGER NOT NULL,
   rating INTEGER NOT NULL,
-  date VARCHAR(20) NOT NULL,
+  date VARCHAR(100) NOT NULL,
   summary VARCHAR(1000) NOT NULL,
   body VARCHAR(1000) NOT NULL,
-  recommend BOOLEAN NOT NULL,
-  reported BOOLEAN NOT NULL,
+  recommend BOOLEAN DEFAULT FALSE,
+  reported BOOLEAN DEFAULT FALSE,
   reviewer_name VARCHAR(100) NOT NULL,
   reviewer_email VARCHAR(100) NOT NULL,
-  response VARCHAR(500) NOT NULL,
+  response VARCHAR(500),
   helpfulness INTEGER NOT NULL DEFAULT 0
 );
 
@@ -38,10 +38,10 @@ CREATE TABLE IF NOT EXISTS characteristics_reviews (
 );
 
 -- Create Indexes (Default B-Tree)
-CREATE INDEX reviews_product_id_idx ON reviews(product_id);
-CREATE INDEX photos_review_id_idx ON photos(review_id);
-CREATE INDEX characteristics_product_id_idx ON characteristics(product_id);
-CREATE INDEX characteristics_reviews_characteristics_id_idx ON characteristics_reviews(characteristic_id);
+-- CREATE INDEX reviews_product_id_idx ON reviews(product_id);
+-- CREATE INDEX photos_review_id_idx ON photos(review_id);
+-- CREATE INDEX characteristics_product_id_idx ON characteristics(product_id);
+-- CREATE INDEX characteristics_reviews_characteristics_id_idx ON characteristics_reviews(characteristic_id);
 
 -- ALTER TABLE photos
 --   ADD CONSTRAINT FK_ReviewPhotos
