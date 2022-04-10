@@ -48,7 +48,7 @@ describe('POST Endpoints', () => {
 describe('PUT Endpoints', () => {
   it('/reviews/:review_id/helpful endpoint should return 204 status', async () => {
     const res = await request(app)
-      .put('/reviews/64623/helpful');
+      .put('/reviews/1/helpful');
 
     expect(res.statusCode).toEqual(204);
     expect(res.req.method).toBe('PUT');
@@ -56,7 +56,7 @@ describe('PUT Endpoints', () => {
 
   it('/reviews/meta endpoint should return 204 status', async () => {
     const res = await request(app)
-      .put('/reviews/64623/report');
+      .put('/reviews/1/report');
 
     expect(res.statusCode).toBe(204);
     expect(res.req.method).toBe('PUT');
