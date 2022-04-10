@@ -25,8 +25,6 @@ const queries = {
     return await db.query(query);
   },
   getReviews: ({product_id, page, count, sort}) => {
-    console.log('page ->', page);
-    console.log('count', count);
     if (sort === 'newest') {
       sort = 'ORDER BY date DESC';
     } else if (sort === 'relevant') {
@@ -53,21 +51,6 @@ const queries = {
       LIMIT ${count}
       OFFSET ${count * page - count}
       ;`;
-
-    // const query = `SELECT r1.id AS review_id, r1.rating, r1.summary, r1.recommend, r1.response, r1.body, r1.date, r1.reviewer_name, r1.helpfulness,
-    //   (
-    //     SELECT ARRAY(
-    //       SELECT p.url::text AS url
-    //       FROM photos p
-    //       WHERE p.id=r1.id
-    //     )
-    //   ) AS photos
-    //   FROM reviews r1
-    //   WHERE r1.product_id = ${product_id} AND r1.reported <> true
-    //   ${sort}
-    //   LIMIT ${count}
-    //   OFFSET ${count * page - count}
-    //   ;`;
 
     return db.query(query)
     .then((res) => {
