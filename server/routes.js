@@ -16,7 +16,7 @@ router.get('/reviews/', async (req, res) => {
     });
   } catch (err) {
     console.log(err);
-    res.sendStatus(500);
+    res.sendStatus(400);
   }
 });
 
@@ -30,7 +30,7 @@ router.get('/reviews/meta', async (req, res) => {
       res.send(data);
     });
   } catch (err) {
-    res.sendStatus(500);
+    res.sendStatus(400);
   }
 });
 
@@ -48,7 +48,7 @@ router.post('/reviews', async (req, res) => {
     res.sendStatus(201);
   } catch (err) {
     console.log(err);
-    res.sendStatus(500);
+    res.sendStatus(400);
   }
 });
 
@@ -61,7 +61,7 @@ router.put('/reviews/:review_id/helpful', async (req, res) => {
     res.sendStatus(204);
   } catch (err) {
     console.log(err)
-    res.sendStatus(500);
+    res.sendStatus(400);
   }
 });
 
@@ -74,7 +74,7 @@ router.put('/reviews/:review_id/report', async (req, res) => {
     res.sendStatus(204);
   } catch (err) {
     console.log(err)
-    res.sendStatus(500);
+    res.sendStatus(400);
   }
 });
 
