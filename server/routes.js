@@ -16,39 +16,39 @@ router.get('/reviews/', async (req, res) => {
     });
   } catch (err) {
     console.log(err);
-    res.sendStatus(500);
+    res.sendStatus(400);
   }
 });
 
 // Get review metadata
 router.get('/reviews/meta', async (req, res) => {
   const product_id = req.query.product_id;
-
+  console.log(product_id);
   try {
     await queries.getMetaData(product_id)
     .then((data) => {
       res.send(data);
     });
   } catch (err) {
-    res.sendStatus(500);
+    res.sendStatus(400);
   }
 });
 
 // Add a review
 router.post('/reviews', async (req, res) => {
   const params = { ...req.body};
-
+  console.log(params);
   try {
     await queries.addReview(params)
-    .then(({rows}) => {
-      const review_id = rows[0].id;
+    .then((result) => {
+      const review_id = result.rows[0].id;
       queries.addPhotos({ photos: params.photos, review_id});
       queries.addCharacteristicsReviews({characteristics: params.characteristics, review_id});
     });
     res.sendStatus(201);
   } catch (err) {
     console.log(err);
-    res.sendStatus(500);
+    res.sendStatus(400);
   }
 });
 
@@ -61,7 +61,7 @@ router.put('/reviews/:review_id/helpful', async (req, res) => {
     res.sendStatus(204);
   } catch (err) {
     console.log(err)
-    res.sendStatus(500);
+    res.sendStatus(400);
   }
 });
 
@@ -74,7 +74,7 @@ router.put('/reviews/:review_id/report', async (req, res) => {
     res.sendStatus(204);
   } catch (err) {
     console.log(err)
-    res.sendStatus(500);
+    res.sendStatus(400);
   }
 });
 

@@ -55,7 +55,6 @@ const queries = {
 
     return db.query(query)
     .then((res) => {
-      console.log(res);
       return res;
     })
     .catch((err) => {
@@ -129,13 +128,11 @@ const queries = {
         transformedCharacteristics = { ...transformedCharacteristics, [row.characteristic]: { id: row.id, value: row.value } };
       });
       data.characteristics = transformedCharacteristics;
-      console.log(data);
       return data;
     };
 
     return db.query(query)
     .then((res) => {
-      console.log(res);
       return transformer(res);
     })
     .catch((err) => {
