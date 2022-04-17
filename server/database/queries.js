@@ -4,6 +4,7 @@ const { Client } = require('pg');
 const db = new Client({
   user: process.env.PG_USER,
   host: process.env.PG_HOST,
+  password: process.env.PG_PASSWORD,
   database: process.env.PG_DATABASE,
   port: process.env.PG_PORT
 });
@@ -107,7 +108,7 @@ const queries = {
       WHERE rMain.product_id = ${product_id}
       GROUP BY rMain.product_id
       ;`;
-
+            console.log('within meta');
     const transformer = (data) => {
       let transformedRatings = {},
         transformedRecommended = {},
@@ -128,12 +129,13 @@ const queries = {
         transformedCharacteristics = { ...transformedCharacteristics, [row.characteristic]: { id: row.id, value: row.value } };
       });
       data.characteristics = transformedCharacteristics;
-
+      console.log(data);
       return data;
     };
 
     return db.query(query)
     .then((res) => {
+      console.log(res);
       return transformer(res);
     })
     .catch((err) => {
@@ -141,7 +143,7 @@ const queries = {
       return err;
     });
   },
-  addPhotos: (photos, review_id) => {
+  addPhotos: ({photos, review_id}) => {
     const query = `INSERT INTO photos (url, review_id)
       SELECT url, review_id FROM UNNEST ($1::text[], $2::int[]) AS t (url, review_id);`;
 
@@ -153,12 +155,11 @@ const queries = {
       return err;
     });
   },
-  addCharacteristicsReviews: (characteristics, review_id) => {
-    const query = ` INSERT INTO characteristics_reviews (review_id, characteristics_id, value)
+  addCharacteristicsReviews: ({characteristics, review_id}) => {
+    const query = ` INSERT INTO characteristics_reviews (review_id, characteristic_id, value)
       SELECT review_id, characteristics_id, value FROM UNNEST ($1::int[], $2::int[], $3::int[]) AS t (review_id, characteristics_id, value)`;
-
     return db.query(query, [
-      Array(Object.keys(characteristics.length)).fill(review_id),
+      Array(Object.keys(characteristics).length).fill(review_id),
       Object.keys(characteristics),
       Object.values(characteristics)
     ])
@@ -166,6 +167,7 @@ const queries = {
       return res;
     })
     .catch((err) => {
+      console.log(err);
       return err;
     });
   },
@@ -175,14 +177,15 @@ const queries = {
       VALUES
       ($1, $2, current_timestamp, $3, $4, $5, $6, $7)
       RETURNING id;`;
+      console.log('PARAMS', params);
     const values = [
       params.product_id,
       params.rating,
       params.summary,
       params.body,
       params.recommend,
-      params.reviewer_name,
-      params.reviewer_email
+      params.name,
+      params.email
     ];
 
     return db.query(query, values)
