@@ -107,7 +107,7 @@ const queries = {
       WHERE rMain.product_id = ${product_id}
       GROUP BY rMain.product_id
       ;`;
-            console.log('within meta');
+
     const transformer = (data) => {
       let transformedRatings = {},
         transformedRecommended = {},
