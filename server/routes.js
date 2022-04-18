@@ -23,7 +23,6 @@ router.get('/reviews/', async (req, res) => {
 // Get review metadata
 router.get('/reviews/meta', async (req, res) => {
   const product_id = req.query.product_id;
-  console.log(product_id);
   try {
     await queries.getMetaData(product_id)
     .then((data) => {
@@ -37,7 +36,6 @@ router.get('/reviews/meta', async (req, res) => {
 // Add a review
 router.post('/reviews', async (req, res) => {
   const params = { ...req.body};
-  console.log(params);
   try {
     await queries.addReview(params)
     .then((result) => {
