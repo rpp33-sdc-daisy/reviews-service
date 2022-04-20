@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const {db, queries} = require('./database/queries.js');
+const { pool, queries } = require('./database/queries.js');
 
 // List reviews
 router.get('/reviews/', async (req, res) => {
