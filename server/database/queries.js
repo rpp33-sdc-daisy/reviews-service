@@ -1,7 +1,7 @@
 require('dotenv').config();
-const { Client } = require('pg');
+const { Pool } = require('pg');
 
-const db = new Client({
+const pool = new Pool({
   user: process.env.PG_USER,
   host: process.env.PG_HOST,
   password: process.env.PG_PASSWORD,
@@ -9,12 +9,9 @@ const db = new Client({
   port: process.env.PG_PORT
 });
 
-db.connect(err => {
-  if (err) {
-    console.error('Connection error: ', err.stack);
-  } else {
-    console.log('Connected!');
-  }
+pool.on('error', (err, client) => {
+  console.log('Unexpected error on idle client: ', err);
+  process.exit(-1);
 });
 
 const queries = {
@@ -23,7 +20,22 @@ const queries = {
       FROM photos
       WHERE review_id = ${review_id}
       ;`;
-    return await db.query(query);
+
+    return pool
+      .connect()
+      .then((client) => {
+        return client
+          .query(query)
+          .then((res) => {
+            client.release();
+            return res;
+          })
+          .catch((err) => {
+            client.release();
+            console.log(err.stack);
+          });
+      });
+    // return await db.query(query);
   },
   getReviews: ({product_id, page, count, sort}) => {
     if (sort === 'newest') {
@@ -53,14 +65,20 @@ const queries = {
       OFFSET ${count * page - count}
       ;`;
 
-    return db.query(query)
-    .then((res) => {
-      return res;
-    })
-    .catch((err) => {
-      console.log(err);
-      return err;
-    });
+      return pool
+      .connect()
+      .then((client) => {
+        return client
+          .query(query)
+          .then((res) => {
+            client.release();
+            return res;
+          })
+          .catch((err) => {
+            client.release();
+            console.log(err.stack);
+          });
+      });
   },
   getMetaData: (product_id) => {
     const query = `
@@ -131,42 +149,63 @@ const queries = {
       return data;
     };
 
-    return db.query(query)
-    .then((res) => {
-      return transformer(res);
-    })
-    .catch((err) => {
-      console.log(err);
-      return err;
-    });
+    return pool
+      .connect()
+      .then((client) => {
+        return client
+          .query(query)
+          .then((res) => {
+            client.release();
+            return transformer(res);
+          })
+          .catch((err) => {
+            client.release();
+            console.log(err.stack);
+          });
+      });
   },
   addPhotos: ({photos, review_id}) => {
     const query = `INSERT INTO photos (url, review_id)
       SELECT url, review_id FROM UNNEST ($1::text[], $2::int[]) AS t (url, review_id);`;
 
-    return db.query(query, [photos, Array(photos.length).fill(review_id)])
-    .then((res) => {
-      return res;
-    })
-    .catch((err) => {
-      return err;
-    });
+    return pool
+      .connect()
+      .then((client) => {
+        return client
+          .query(query, [photos, Array(photos.length).fill(review_id)])
+          .then((res) => {
+            client.release();
+            return res;
+          })
+          .catch((err) => {
+            client.release();
+            console.log(err.stack);
+          });
+      });
   },
   addCharacteristicsReviews: ({characteristics, review_id}) => {
     const query = ` INSERT INTO characteristics_reviews (review_id, characteristic_id, value)
       SELECT review_id, characteristics_id, value FROM UNNEST ($1::int[], $2::int[], $3::int[]) AS t (review_id, characteristics_id, value)`;
-    return db.query(query, [
-      Array(Object.keys(characteristics).length).fill(review_id),
-      Object.keys(characteristics),
-      Object.values(characteristics)
-    ])
-    .then((res) => {
-      return res;
-    })
-    .catch((err) => {
-      console.log(err);
-      return err;
-    });
+
+    return pool
+      .connect()
+      .then((client) => {
+        return client
+          .query(query, [
+            Array(Object.keys(characteristics).length).fill(review_id),
+            Object.keys(characteristics),
+            Object.values(characteristics)
+          ])
+          .then((res) => {
+            client.release();
+            return res;
+          })
+          .catch((err) => {
+            client.release();
+            console.log(err.stack);
+          });
+      });
+
   },
   addReview: (params) => {
     const query = `INSERT INTO reviews
@@ -185,35 +224,56 @@ const queries = {
       params.email
     ];
 
-    return db.query(query, values)
-    .then((res) => {
-      return res;
-    })
-    .catch((err) => {
-      return err;
-    });
+    return pool
+      .connect()
+      .then((client) => {
+        return client
+          .query(query, values)
+          .then((res) => {
+            client.release();
+            return res;
+          })
+          .catch((err) => {
+            client.release();
+            console.log(err.stack);
+          });
+      });
   },
   markHelpful: (review_id) => {
     const query = `UPDATE reviews SET helpfulness =  helpfulness + 1 WHERE id = ${review_id}`;
 
-    return db.query(query)
-    .then((res) => {
-      return res;
-    })
-    .catch((err) => {
-      return err;
-    });
+    return pool
+      .connect()
+      .then((client) => {
+        return client
+          .query(query)
+          .then((res) => {
+            client.release();
+            return res;
+          })
+          .catch((err) => {
+            client.release();
+            console.log(err.stack);
+          });
+      });
   },
   reportReview: (review_id) => {
     const query = `UPDATE reviews SET reported = NOT reported WHERE id= ${review_id};`;
 
-    return db.query(query)
-    .then((res) => {
-      return res;
-    })
-    .catch((err) => {
-      return err;
-    });
+    return pool
+      .connect()
+      .then((client) => {
+        return client
+          .query(query)
+          .then((res) => {
+            client.release();
+            return res;
+          })
+          .catch((err) => {
+            client.release();
+            console.log(err.stack);
+          });
+      });
   }
 }
-module.exports = { db, queries };
+module.exports = { pool, queries };
