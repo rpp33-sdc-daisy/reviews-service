@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS characteristics CASCADE;
 DROP TABLE IF EXISTS characteristics_reviews CASCADE;
 
 CREATE TABLE IF NOT EXISTS reviews (
-  id SERIAL NOT NULL PRIMARY KEY,
+  id INTEGER PRIMARY KEY,
   product_id INTEGER NOT NULL,
   rating INTEGER NOT NULL,
   date VARCHAR(100) NOT NULL,
@@ -12,26 +12,26 @@ CREATE TABLE IF NOT EXISTS reviews (
   body VARCHAR(1000) NOT NULL,
   recommend BOOLEAN DEFAULT FALSE,
   reported BOOLEAN DEFAULT FALSE,
-  reviewer_name VARCHAR(100) NOT NULL,
-  reviewer_email VARCHAR(100) NOT NULL,
+  reviewer_name VARCHAR(100),
+  reviewer_email VARCHAR(100),
   response VARCHAR(500),
   helpfulness INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS photos (
-  id SERIAL NOT NULL PRIMARY KEY,
+  id INTEGER PRIMARY KEY,
   review_id INTEGER NOT NULL,
   url VARCHAR(1000) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS characteristics (
-  id SERIAL NOT NULL UNIQUE PRIMARY KEY,
+  id INTEGER PRIMARY KEY,
   product_id INTEGER NOT NULL,
   characteristic VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS characteristics_reviews (
-  id SERIAL PRIMARY KEY,
+  id INTEGER PRIMARY KEY,
   characteristic_id INTEGER NOT NULL,
   review_id INTEGER NOT NULL,
   value INTEGER NOT NULL

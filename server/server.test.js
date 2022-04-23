@@ -1,10 +1,9 @@
 const request = require('supertest');
 const { app, server } = require ('./server.js');
-const {db, queries} = require('./database/queries.js');
+const { pool, queries } = require('./database/queries.js');
 
 afterAll(() => {
   server.close();
-  db.end();
 });
 
 describe('Jest test', () => {
@@ -62,3 +61,23 @@ describe('PUT Endpoints', () => {
     expect(res.req.method).toBe('PUT');
   });
 });
+
+// describe('SELECT queries', () => {
+//   it('/reviews/ endpoint should return 200 status', async () => {
+//     const res = await request(app)
+//       .get('/reviews/?product_id=64621');
+
+//     expect(res.statusCode).toBe(200);
+//     expect(res.req.method).toBe('GET');
+//   });
+
+//   it('/reviews/meta endpoint should return 200 status', async () => {
+//     const res = await request(app)
+//       .get('/reviews/meta')
+//       .send({
+//         product_id: 64623
+//       });
+//     expect(res.statusCode).toEqual(200);
+//     expect(res.req.method).toBe('GET');
+//   });
+// });
