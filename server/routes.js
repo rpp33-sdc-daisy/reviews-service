@@ -23,12 +23,14 @@ router.get('/reviews/', async (req, res) => {
 // Get review metadata
 router.get('/reviews/meta', async (req, res) => {
   const product_id = req.query.product_id;
+  console.log(product_id);
   try {
     await queries.getMetaData(product_id)
     .then((data) => {
       res.send(data);
     });
   } catch (err) {
+    console.log(err);
     res.sendStatus(400);
   }
 });
@@ -36,9 +38,11 @@ router.get('/reviews/meta', async (req, res) => {
 // Add a review
 router.post('/reviews', async (req, res) => {
   const params = { ...req.body};
+  console.log(req.body);
   try {
     await queries.addReview(params)
     .then((result) => {
+      console.log(result);
       const review_id = result.rows[0].id;
       queries.addPhotos({ photos: params.photos, review_id});
       queries.addCharacteristicsReviews({characteristics: params.characteristics, review_id});

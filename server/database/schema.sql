@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS characteristics CASCADE;
 DROP TABLE IF EXISTS characteristics_reviews CASCADE;
 
 CREATE TABLE IF NOT EXISTS reviews (
-  id SERIAL PRIMARY KEY,
+  id INTEGER PRIMARY KEY,
   product_id INTEGER NOT NULL,
   rating INTEGER NOT NULL,
   date VARCHAR(100) NOT NULL,
@@ -19,19 +19,19 @@ CREATE TABLE IF NOT EXISTS reviews (
 );
 
 CREATE TABLE IF NOT EXISTS photos (
-  id SERIAL PRIMARY KEY,
+  id INTEGER PRIMARY KEY,
   review_id INTEGER NOT NULL,
   url VARCHAR(1000) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS characteristics (
-  id SERIAL PRIMARY KEY,
+  id INTEGER PRIMARY KEY,
   product_id INTEGER NOT NULL,
   characteristic VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS characteristics_reviews (
-  id SERIAL PRIMARY KEY,
+  id INTEGER PRIMARY KEY,
   characteristic_id INTEGER NOT NULL,
   review_id INTEGER NOT NULL,
   value INTEGER NOT NULL
@@ -70,8 +70,4 @@ CREATE TABLE IF NOT EXISTS characteristics_reviews (
   \COPY photos FROM '/Users/jakobtruong/coding/hack-reactor/rpp33/reviews-service/server/database/data/reviews_photos.csv' WITH delimiter ','  CSV HEADER;
   \COPY characteristics FROM '/Users/jakobtruong/coding/hack-reactor/rpp33/reviews-service/server/database/data/characteristics.csv' WITH delimiter ','  CSV HEADER;
   \COPY characteristics_reviews FROM '/Users/jakobtruong/coding/hack-reactor/rpp33/reviews-service/server/database/data/characteristic_reviews.csv' WITH delimiter ','  CSV HEADER;
-  SELECT setval('reviews_id_seq', (SELECT MAX(id)+1 FROM reviews), false);
-  SELECT setval('photos_id_seq', (SELECT MAX(id)+1 FROM photos), false);
-  SELECT setval('characteristics_id_seq', (SELECT MAX(id)+1 FROM characteristics), false);
-  SELECT setval('characteristics_reviews_id_seq', (SELECT MAX(id)+1 FROM characteristics_reviews), false);
 */
