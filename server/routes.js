@@ -19,11 +19,12 @@ router.get('/reviews/', async (req, res) => {
     res.sendStatus(400);
   }
 });
-
+router.get('/loaderio-f21320ff0ca5a683e37063ccfa552813.txt', (req, res) => {
+	res.sendFile('/home/ubuntu/reviews-service/server/loaderio-f21320ff0ca5a683e37063ccfa552813.txt');
+});
 // Get review metadata
 router.get('/reviews/meta', async (req, res) => {
   const product_id = req.query.product_id;
-  console.log(product_id);
   try {
     await queries.getMetaData(product_id)
     .then((data) => {
