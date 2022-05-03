@@ -1,5 +1,43 @@
 const router = require('express').Router();
 const { pool, queries } = require('./database/queries.js');
+const redis = require('redis');
+const { promisify } = require('util');
+require('dotenv').config();
+
+const redisClient = redis.createClient({
+  url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`
+});
+
+redisClient.on('error', (err) => {
+  console.log('Redis Client Error: ', err);
+});
+
+// redisClient.on('connect', () => {
+//   console.log('Redis Connection Successful!');
+// });
+
+// const setAsyncEx = promisify(redisClient.SETEX).bind(redisClient);
+// const getAsync = promisify(redisClient.GET).bind(redisClient);
+
+// async function redisSaveWithTtl(key, value, ttlSeconds = 3600) {
+//   return await setAsyncEx(key, ttlSeconds, JSON.stringify(value));
+// }
+
+// async function redisGet(key) {
+//   console.log(key);
+//   const jsonString = await getAsync(key)
+//     .then((data) => {
+//       console.log(data);
+//     });
+
+//   if (jsonString) {
+//     return JSON.parse(jsonString);
+//   }
+// }
+
+(async () => {
+  await redisClient.connect();
+})();
 
 // List reviews
 router.get('/reviews/', async (req, res) => {
@@ -7,15 +45,25 @@ router.get('/reviews/', async (req, res) => {
   const page = req.query.page || 1;
   const count = req.query.count || 5;
   const sort = req.query.sort || 'newest';
+  const redisKey = `getReviews-${product_id}-${page}-${count}-${sort}`;
 
   try {
+    const cachedData = await redisClient.GET(redisKey);
+    if (cachedData) {
+      return res.send(JSON.parse(cachedData));
+    }
+
     await queries.getReviews({product_id, page, count, sort})
-    .then((data) => {
-      var result = data.rows;
-      res.send({product: product_id, page, count, results: result});
-    });
+      .then((data) => {
+        var result = data.rows;
+        redisClient.SETEX(redisKey, 300, JSON.stringify({product: product_id, page, count, results: result}));
+        res.send({product: product_id, page, count, results: result});
+      })
+        .catch((err) => {
+          console.log('Error getting metadata from psql db: ', err);
+          res.sendStatus(400);
+        });
   } catch (err) {
-    console.log(err);
     res.sendStatus(400);
   }
 });
@@ -23,14 +71,24 @@ router.get('/reviews/', async (req, res) => {
 // Get review metadata
 router.get('/reviews/meta', async (req, res) => {
   const product_id = req.query.product_id;
-  console.log(product_id);
+  const redisKey = `getMetaData-${product_id}`;
+
   try {
+    const cachedData = await redisClient.GET(redisKey);
+    if (cachedData) {
+      return res.send(JSON.parse(cachedData));
+    }
+
     await queries.getMetaData(product_id)
-    .then((data) => {
-      res.send(data);
-    });
+      .then((data) => {
+        redisClient.SETEX(redisKey, 300, JSON.stringify(data));
+        res.send(data);
+      })
+        .catch((err) => {
+          console.log('Error getting metadata from psql db: ', err);
+          res.sendStatus(400);
+        });
   } catch (err) {
-    console.log(err);
     res.sendStatus(400);
   }
 });
@@ -38,11 +96,9 @@ router.get('/reviews/meta', async (req, res) => {
 // Add a review
 router.post('/reviews', async (req, res) => {
   const params = { ...req.body};
-  console.log(req.body);
   try {
     await queries.addReview(params)
     .then((result) => {
-      console.log(result);
       const review_id = result.rows[0].id;
       queries.addPhotos({ photos: params.photos, review_id});
       queries.addCharacteristicsReviews({characteristics: params.characteristics, review_id});
