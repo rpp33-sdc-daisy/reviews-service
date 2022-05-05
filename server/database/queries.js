@@ -35,7 +35,7 @@ const queries = {
             console.log(err.stack);
           });
       });
-    // return await db.query(query);
+
   },
   getReviews: ({product_id, page, count, sort}) => {
     if (sort === 'newest') {
@@ -158,7 +158,7 @@ const queries = {
             return transformer(res);
           })
           .catch((err) => {
-            client.release();
+            // client.release();
             console.log(err.stack);
           });
       });
