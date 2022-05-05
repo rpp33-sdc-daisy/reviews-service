@@ -1,7 +1,6 @@
 const router = require('express').Router();
 const { pool, queries } = require('./database/queries.js');
 const redis = require('redis');
-const { promisify } = require('util');
 require('dotenv').config();
 
 const redisClient = redis.createClient({
@@ -11,29 +10,6 @@ const redisClient = redis.createClient({
 redisClient.on('error', (err) => {
   console.log('Redis Client Error: ', err);
 });
-
-// redisClient.on('connect', () => {
-//   console.log('Redis Connection Successful!');
-// });
-
-// const setAsyncEx = promisify(redisClient.SETEX).bind(redisClient);
-// const getAsync = promisify(redisClient.GET).bind(redisClient);
-
-// async function redisSaveWithTtl(key, value, ttlSeconds = 3600) {
-//   return await setAsyncEx(key, ttlSeconds, JSON.stringify(value));
-// }
-
-// async function redisGet(key) {
-//   console.log(key);
-//   const jsonString = await getAsync(key)
-//     .then((data) => {
-//       console.log(data);
-//     });
-
-//   if (jsonString) {
-//     return JSON.parse(jsonString);
-//   }
-// }
 
 (async () => {
   await redisClient.connect();
@@ -56,7 +32,7 @@ router.get('/reviews/', async (req, res) => {
     await queries.getReviews({product_id, page, count, sort})
       .then((data) => {
         var result = data.rows;
-        redisClient.SETEX(redisKey, 300, JSON.stringify({product: product_id, page, count, results: result}));
+        redisClient.SET(redisKey, JSON.stringify({product: product_id, page, count, results: result}));
         res.send({product: product_id, page, count, results: result});
       })
         .catch((err) => {
@@ -83,7 +59,7 @@ router.get('/reviews/meta', async (req, res) => {
 
     await queries.getMetaData(product_id)
       .then((data) => {
-        redisClient.SETEX(redisKey, 300, JSON.stringify(data));
+        redisClient.SET(redisKey, JSON.stringify(data));
         res.send(data);
       })
         .catch((err) => {
