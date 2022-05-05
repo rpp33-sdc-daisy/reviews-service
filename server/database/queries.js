@@ -15,7 +15,7 @@ pool.on('error', (err, client) => {
 });
 
 const queries = {
-  getPhotos: async (review_id) => {
+  getPhotos: (review_id) => {
     const query = `SELECT id, url
       FROM photos
       WHERE review_id = ${review_id}
@@ -158,7 +158,7 @@ const queries = {
             return transformer(res);
           })
           .catch((err) => {
-            // client.release();
+            client.release();
             console.log(err.stack);
           });
       });
