@@ -7,5 +7,4 @@ server/database/mongo.js
 *.PEM
 sdcReviews_backup.sql
 sdcReviews.sql
-loaderio*
 newrelic_agent.log

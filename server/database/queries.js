@@ -7,11 +7,7 @@ const pool = new Pool({
   password: process.env.PG_PASSWORD,
   database: process.env.PG_DATABASE,
   port: process.env.PG_PORT,
-<<<<<<< HEAD
-  max: 20
-=======
   max: 10
->>>>>>> ab25203e75292aa0a1129e400476c25f3a72e527
 });
 
 pool.on('error', (err, client) => {
@@ -159,14 +155,24 @@ const queries = {
         return client
           .query(query)
           .then((res) => {
+		  if (res.rows[0] === undefined) {
+              res.rows[0] = {
+                product_id: product_id,
+                ratings: [ { counts: [Object] } ],
+                recommended: [ { recommendcounts: [Object] } ],
+                characteristics: [
+                  { characteristic: 'Width', id: 3347661, value: 4.5 },
+                  { characteristic: 'Quality', id: 3347663, value: 4 },
+                  { characteristic: 'Size', id: 3347660, value: 1.5 },
+                  { characteristic: 'Comfort', id: 3347662, value: 3.5 }
+                ]
+              };
+            }
             client.release();
             return transformer(res);
           })
           .catch((err) => {
-<<<<<<< HEAD
-=======
             // client.release();
->>>>>>> ab25203e75292aa0a1129e400476c25f3a72e527
             console.log(err.stack);
           });
       });

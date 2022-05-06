@@ -43,8 +43,8 @@ router.get('/reviews/', async (req, res) => {
     res.sendStatus(400);
   }
 });
-router.get('/loaderio-f21320ff0ca5a683e37063ccfa552813.txt', (req, res) => {
-	res.sendFile('/home/ubuntu/reviews-service/server/loaderio-f21320ff0ca5a683e37063ccfa552813.txt');
+router.get('/loaderio-95b21c0e188c779812e0f9254c40660d.txt', (req, res) => {
+	res.sendFile('/home/ubuntu/reviews-service/server/loaderio-95b21c0e188c779812e0f9254c40660d.txt');
 });
 // Get review metadata
 router.get('/reviews/meta', async (req, res) => {
@@ -55,8 +55,7 @@ router.get('/reviews/meta', async (req, res) => {
     const cachedData = await redisClient.GET(redisKey);
     if (cachedData) {
       return res.send(JSON.parse(cachedData));
-    }
-
+    } else {
     await queries.getMetaData(product_id)
       .then((data) => {
         redisClient.SET(redisKey, JSON.stringify(data));
@@ -66,6 +65,7 @@ router.get('/reviews/meta', async (req, res) => {
           console.log('Error getting metadata from psql db: ', err);
           res.sendStatus(400);
         });
+    }
   } catch (err) {
     res.sendStatus(400);
   }
