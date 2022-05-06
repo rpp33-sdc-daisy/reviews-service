@@ -8,3 +8,4 @@ server/database/mongo.js
 sdcReviews_backup.sql
 sdcReviews.sql
 loaderio*
+newrelic_agent.log
