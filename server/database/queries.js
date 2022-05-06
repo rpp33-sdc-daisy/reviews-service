@@ -7,7 +7,11 @@ const pool = new Pool({
   password: process.env.PG_PASSWORD,
   database: process.env.PG_DATABASE,
   port: process.env.PG_PORT,
+<<<<<<< HEAD
   max: 20
+=======
+  max: 10
+>>>>>>> ab25203e75292aa0a1129e400476c25f3a72e527
 });
 
 pool.on('error', (err, client) => {
@@ -36,7 +40,7 @@ const queries = {
             console.log(err.stack);
           });
       });
-    // return await db.query(query);
+
   },
   getReviews: ({product_id, page, count, sort}) => {
     if (sort === 'newest') {
@@ -159,6 +163,10 @@ const queries = {
             return transformer(res);
           })
           .catch((err) => {
+<<<<<<< HEAD
+=======
+            // client.release();
+>>>>>>> ab25203e75292aa0a1129e400476c25f3a72e527
             console.log(err.stack);
           });
       });
